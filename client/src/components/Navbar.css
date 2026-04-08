@@ -1,0 +1,224 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(5, 5, 5, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 60px;
+}
+
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+}
+
+/* Logo */
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.navbar__logo-icon { font-size: 22px; line-height: 1; }
+
+.navbar__logo-text {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.navbar__logo-text strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Links de navegación */
+.navbar__links {
+  display: flex;
+  gap: 24px;
+}
+
+.navbar__link {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.navbar__link:hover { color: var(--text); }
+
+/* Zona derecha */
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* Botón instalar PWA */
+.navbar__install-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  background: rgba(229, 57, 53, 0.06);
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.navbar__install-btn:hover { background: rgba(229, 57, 53, 0.18); }
+
+/* Búsqueda */
+.navbar__search { position: relative; }
+
+.navbar__search-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  background: none;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.navbar__search-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.navbar__search-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+kbd {
+  font-size: 11px;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: monospace;
+  color: var(--text-muted);
+}
+
+/* Overlay de búsqueda */
+.navbar__search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 100px;
+  animation: fadeInOverlay 0.15s ease;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.navbar__search-box {
+  width: 560px;
+  max-width: 90vw;
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 50px var(--accent-glow);
+  animation: slideDownBox 0.15s ease;
+}
+
+@keyframes slideDownBox {
+  from { transform: translateY(-12px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.navbar__search-box form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: var(--text-muted);
+}
+
+.navbar__search-box input {
+  flex: 1;
+  font-size: 16px;
+  color: var(--text);
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.navbar__search-box input::placeholder { color: var(--text-muted); }
+
+.navbar__search-go {
+  padding: 6px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.navbar__search-go:hover { background: var(--accent-dim); }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .navbar__links { display: none; }
+
+  .navbar__search-hint span:not(kbd),
+  .navbar__install-btn span { display: none; }
+
+  .navbar__install-btn { padding: 6px; }
+  .navbar__search-btn  { padding: 6px 10px; }
+}
+
+@media (max-width: 380px) {
+  .navbar__logo-text { font-size: 16px; }
+}
+
+/* Lang selector */
+.navbar__lang { display:flex; gap:2px; }
+.navbar__lang-btn { padding:4px 8px; border:1px solid var(--border); background:none; color:var(--text-muted); font-family:var(--font-display); font-size:11px; font-weight:700; cursor:pointer; border-radius:3px; transition:all .15s; }
+.navbar__lang-btn:hover { color:var(--text); border-color:var(--text-muted); }
+.navbar__lang-btn--active { color:var(--accent); border-color:var(--accent); background:rgba(229,57,53,.06); }
+/* Icon btn */
+.navbar__icon-btn { display:flex; align-items:center; justify-content:center; width:34px; height:34px; border:1px solid var(--border); border-radius:var(--radius); background:none; color:var(--text-muted); cursor:pointer; transition:all .2s; }
+.navbar__icon-btn:hover { border-color:var(--accent); color:var(--text); }
+@media (max-width:900px) { .navbar__links .navbar__link:nth-child(n+3) { display:none; } }
+@media (max-width:640px) { .navbar__links { display:none; } .navbar__lang { display:none; } }
+
+/* Atajo de teclado */
+@keyframes spOpen { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }

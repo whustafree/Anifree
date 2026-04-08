@@ -1,0 +1,47 @@
+.adblock-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.adblock-badge--on {
+  color: #4caf50;
+  border-color: rgba(76, 175, 80, 0.25);
+  background: rgba(76, 175, 80, 0.06);
+}
+
+.adblock-badge--off {
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: transparent;
+}
+
+.adblock-badge__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.adblock-badge--on  .adblock-badge__dot { background: #4caf50; animation: pulse-green 2s infinite; }
+.adblock-badge--off .adblock-badge__dot { background: var(--text-muted); }
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Ocultar label en móvil pequeño */
+@media (max-width: 480px) {
+  .adblock-badge__label { display: none; }
+  .adblock-badge { padding: 3px 6px; }
+}

@@ -1,0 +1,21 @@
+.fav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.fav-btn--md { width: 36px; height: 36px; }
+.fav-btn--md svg { width: 18px; height: 18px; }
+.fav-btn--sm { width: 28px; height: 28px; }
+.fav-btn--sm svg { width: 14px; height: 14px; }
+
+.fav-btn:hover { color: #e53935; background: rgba(229,57,53,0.15); transform: scale(1.1); }
+.fav-btn--active { color: #e53935; }
+.fav-btn--active:hover { color: #ef9a9a; }

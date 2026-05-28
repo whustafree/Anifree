@@ -2,7 +2,7 @@ import cloudscraper from 'cloudscraper';
 import * as cheerio from 'cheerio';
 import { Anime, Episode, EpisodeDetail, SearchResult, VideoSource } from '../types';
 
-const BASE_URL = process.env.ANIMEFLV_BASE_URL || 'https://www3.animeflv.net';
+const BASE_URL = process.env.ANIMEFLV_BASE_URL || 'https://www4.animeflv.net';
 const TIMEOUT  = parseInt(process.env.SCRAPER_TIMEOUT || '15000');
 
 async function fetchPage(url: string): Promise<string> {
@@ -35,6 +35,21 @@ function buildThumbnailUrl(rawSrc: string, animeSlug: string, epNum: number): st
   if (rawSrc && rawSrc.startsWith('/')) return `${BASE_URL}${rawSrc}`;
   if (animeSlug) return `${BASE_URL}/uploads/episodios/${animeSlug}/${epNum}/th_1.jpg`;
   return '';
+}
+
+/**
+ * Normaliza el tipo de anime desde cualquier variante de texto que use AnimeFlv.
+ * La página de detalle usa "Anime" para referirse a TV.
+ */
+function normalizeType(raw: string): Anime['type'] {
+  const t = (raw || '').toLowerCase().trim();
+  const map: Record<string, Anime['type']> = {
+    'tv': 'TV', 'anime': 'TV', 'serie': 'TV',
+    'pelicula': 'Película', 'movie': 'Película', 'película': 'Película',
+    'ova': 'OVA', 'oav': 'OVA',
+    'especial': 'Especial', 'special': 'Especial',
+  };
+  return map[t] || (raw.trim() as Anime['type']) || 'TV';
 }
 
 /**
@@ -80,16 +95,34 @@ function parseAnimeListFromScript(html: string): Map<string, { status: Anime['st
   try {
     const list: any[][] = JSON.parse(m[1]);
     for (const item of list) {
-      // item[2] = slug, item[7] = status (1/2/3), item[8] puede ser episodeCount
-      const slug        = String(item[2] || '');
-      const statusCode  = String(item[7] || '2');
-      const epCount     = typeof item[8] === 'number' ? item[8] : 0;
-      if (slug) {
-        map.set(slug, {
-          status: normalizeStatus(statusCode),
-          episodeCount: epCount,
-        });
+      const slug = String(item[2] || '');
+      if (!slug) continue;
+
+      // Índices del array anime_list — probamos varias posiciones
+      // Formato típico: [id, title, slug, cover, synopsis, rating, type, status, episodes?]
+      // A veces el array tiene menos elementos
+      let statusCode  = '2';
+      let epCount     = 0;
+
+      // Buscar status: probar índice 7, luego 6, luego -1 (desde el final)
+      if (item.length > 7) {
+        const v = item[7];
+        if (typeof v === 'string' && (v === '1' || v === '2' || v === '3'))
+          statusCode = v;
+        else if (typeof v === 'number' && (v >= 1 && v <= 3))
+          statusCode = String(v);
       }
+
+      // Buscar episodeCount: probar índice 8, luego el último si es número
+      if (item.length > 8 && typeof item[8] === 'number')
+        epCount = item[8];
+      else if (item.length > 0) {
+        const last = item[item.length - 1];
+        if (typeof last === 'number' && last > 0 && last < 9999)
+          epCount = last;
+      }
+
+      map.set(slug, { status: normalizeStatus(statusCode), episodeCount: epCount });
     }
   } catch { /* HTML cambió, ignorar */ }
 
@@ -120,19 +153,11 @@ function parseAnimeCard(el: any, $: cheerio.CheerioAPI, extraData?: { status: An
   const slug     = href.replace('/anime/', '').replace(/\/$/, '');
   const coverUrl = $el.find('img').attr('src') || $el.find('img').attr('data-src') || '';
   const typeText = $el.find('.Type').first().text().trim();
-
-  const typeMap: Record<string, Anime['type']> = {
-    'tv': 'TV', 'anime': 'TV',
-    'pelicula': 'Película', 'movie': 'Película', 'película': 'Película',
-    'ova': 'OVA',
-    'especial': 'Especial', 'special': 'Especial',
-  };
-  const type = typeMap[typeText.toLowerCase()] || (typeText as Anime['type']) || 'TV';
+  const type = normalizeType(typeText);
 
   return {
-    title, slug, id: slug,
-    coverUrl: coverUrl.startsWith('http') ? coverUrl : `${BASE_URL}${coverUrl}`,
-    type,
+    title, slug, id: slug,      coverUrl: coverUrl.startsWith('http') ? coverUrl.replace(/https?:\/\/[^\/]+/, BASE_URL) : `${BASE_URL}${coverUrl}`,
+      type,
     // Usar datos del script si están disponibles, sino marcar como desconocido
     status: extraData?.status ?? 'Finalizado',
     episodeCount: extraData?.episodeCount ?? 0,
@@ -178,7 +203,9 @@ export async function getLatestEpisodes(): Promise<Episode[]> {
     const rawSrc   = img.attr('src') || img.attr('data-src') || img.attr('data-lazy') || '';
     const epNum    = parseInt($el.find('.Capi').text().replace(/\D/g, '')) || epNumFromSlug(slug);
     const animeSlug = animeSlugFromEpSlug(slug);
-    episodes.push({ id: slug, animeSlug, number: epNum, slug, thumbnailUrl: buildThumbnailUrl(rawSrc, animeSlug, epNum) });
+    // Normalizar cover URLs para usar BASE_URL consistente
+    const thumbnailUrl = buildThumbnailUrl(rawSrc, animeSlug, epNum).replace(/https?:\/\/www\.?[34]?\.animeflv\.net/, BASE_URL);
+    episodes.push({ id: slug, animeSlug, number: epNum, slug, thumbnailUrl });
   });
 
   return episodes.slice(0, 18);
@@ -259,9 +286,9 @@ export async function getAnimeDetail(slug: string): Promise<Anime> {
   const title    = $('h1.Title').text().trim();
   const synopsis = $('div.Description p').first().text().trim();
   const rawCover = $('div.AnimeCover img, .cover-image img').first().attr('src') || '';
-  const coverUrl = rawCover.startsWith('http') ? rawCover : `${BASE_URL}${rawCover}`;
+  const coverUrl = rawCover.startsWith('http') ? rawCover.replace(/https?:\/\/[^\/]+/, `${BASE_URL}`) : `${BASE_URL}${rawCover}`;
   const rating   = parseFloat($('span#votes_prmd, #rating').text()) || 0;
-  const type     = $('span.Type').first().text().trim() as Anime['type'];
+  const type     = normalizeType($('span.Type').first().text().trim());
   const genres: string[] = [];
   $('nav.Nvgnrs a, .genres a').each((_, el) => { genres.push($(el).text().trim()); });
 

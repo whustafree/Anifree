@@ -204,7 +204,7 @@ export async function getLatestEpisodes(): Promise<Episode[]> {
     const epNum    = parseInt($el.find('.Capi').text().replace(/\D/g, '')) || epNumFromSlug(slug);
     const animeSlug = animeSlugFromEpSlug(slug);
     // Normalizar cover URLs para usar BASE_URL consistente
-    const thumbnailUrl = buildThumbnailUrl(rawSrc, animeSlug, epNum).replace(/https?:\/\/www\.?[34]?\.animeflv\.net/, BASE_URL);
+    const thumbnailUrl = buildThumbnailUrl(rawSrc, animeSlug, epNum).replace(/https?:\/\/[^\/]+\.animeflv\.net/, BASE_URL);
     episodes.push({ id: slug, animeSlug, number: epNum, slug, thumbnailUrl });
   });
 

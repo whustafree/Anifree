@@ -12,13 +12,13 @@ export default function SearchPredict({ onClose }: Props) {
   const [loading, setLoading]   = useState(false);
   const [cursor, setCursor]     = useState(-1);
   const inputRef                = useRef<HTMLInputElement>(null);
-  const timerRef                = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef                = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate                = useNavigate();
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
   useEffect(() => {
-    clearTimeout(timerRef.current);
+    clearTimeout(timerRef.current ?? undefined);
     if (query.trim().length < 2) { setResults([]); return; }
     setLoading(true);
     timerRef.current = setTimeout(async () => {
@@ -29,7 +29,7 @@ export default function SearchPredict({ onClose }: Props) {
       setLoading(false);
       setCursor(-1);
     }, 400);
-    return () => clearTimeout(timerRef.current);
+    return () => clearTimeout(timerRef.current ?? undefined);
   }, [query]);
 
   const go = (slug: string) => { navigate(`/anime/${slug}`); onClose(); };

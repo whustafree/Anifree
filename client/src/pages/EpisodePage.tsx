@@ -15,7 +15,7 @@ export default function EpisodePage() {
   const [error, setError]           = useState<string | null>(null);
   const [activeSource, setActive]   = useState(0);
   const [lang, setLang]             = useState<'SUB'|'LAT'|'ESP'>(config.getLang());
-  const [animeInfo, setAnimeInfo]   = useState<{title:string; coverUrl:string} | null>(null);
+  const [, setAnimeInfo]   = useState<{title:string; coverUrl:string} | null>(null);
   const epListRef                   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

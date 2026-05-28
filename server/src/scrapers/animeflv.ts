@@ -6,21 +6,19 @@ const BASE_URL = process.env.ANIMEFLV_BASE_URL || 'https://www3.animeflv.net';
 const TIMEOUT  = parseInt(process.env.SCRAPER_TIMEOUT || '15000');
 
 async function fetchPage(url: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    cloudscraper.get({
+  try {
+    const body = await cloudscraper({
       uri: url, timeout: TIMEOUT,
       headers: {
         'Accept-Language': 'es-ES,es;q=0.9',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       }
-    }, (error: any, response: any, body: string) => {
-      if (error) return reject(new Error(`Error al conectar: ${error.message}`));
-      if (response.statusCode !== 200)
-        return reject(new Error(`Status ${response.statusCode}`));
-      resolve(body);
     });
-  });
+    return body as unknown as string;
+  } catch (error: any) {
+    throw new Error(`Error al conectar: ${error.message}`);
+  }
 }
 
 function epNumFromSlug(slug: string): number {
@@ -115,7 +113,7 @@ function parseEpisodesFromScript(html: string, animeSlug: string): Episode[] {
   } catch { return []; }
 }
 
-function parseAnimeCard(el: cheerio.Element, $: cheerio.CheerioAPI, extraData?: { status: Anime['status']; episodeCount: number }): Partial<Anime> {
+function parseAnimeCard(el: any, $: cheerio.CheerioAPI, extraData?: { status: Anime['status']; episodeCount: number }): Partial<Anime> {
   const $el      = $(el);
   const title    = $el.find('h3.Title').text().trim();
   const href     = $el.find('a').first().attr('href') || '';
@@ -265,7 +263,7 @@ export async function getAnimeDetail(slug: string): Promise<Anime> {
   const rating   = parseFloat($('span#votes_prmd, #rating').text()) || 0;
   const type     = $('span.Type').first().text().trim() as Anime['type'];
   const genres: string[] = [];
-  $('nav.Nvgnrs a, .genres a').each((_, el) => genres.push($(el).text().trim()));
+  $('nav.Nvgnrs a, .genres a').each((_, el) => { genres.push($(el).text().trim()); });
 
   // Status desde el DOM de la página de detalle
   // AnimeFlv usa <p class="AnmStts"><span>En emision</span></p>

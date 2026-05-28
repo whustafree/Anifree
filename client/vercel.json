@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://anifree-api-pro.onrender.com/api/:path*"
+      "destination": "https://anifree-fpa3.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",

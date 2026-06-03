@@ -8,12 +8,20 @@
   --accent: #e53935;
   --accent-dim: #b71c1c;
   --accent-glow: rgba(229, 57, 53, 0.25);
+  --accent-gradient: linear-gradient(135deg, #e53935, #ff6f00);
+  --accent-gradient-2: linear-gradient(135deg, #e53935, #d500f9);
   --text: #f0f0f0;
   --text-muted: #666;
   --text-dim: #999;
   --radius: 6px;
+  --radius-lg: 12px;
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 30px rgba(229, 57, 53, 0.15);
   --font-display: 'Rajdhani', sans-serif;
   --font-body: 'Noto Sans JP', sans-serif;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -67,10 +75,36 @@ input { font: inherit; color: inherit; background: none; border: none; outline: 
   border-radius: 2px;
 }
 
-/* Skeleton loader */
+/* Animaciones globales */
 @keyframes shimmer {
   0% { background-position: -400px 0; }
   100% { background-position: 400px 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(229, 57, 53, 0.15); }
+  50%      { box-shadow: 0 0 40px rgba(229, 57, 53, 0.3); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .skeleton {
@@ -79,6 +113,28 @@ input { font: inherit; color: inherit; background: none; border: none; outline: 
   animation: shimmer 1.5s infinite;
   border-radius: var(--radius);
 }
+
+/* Fade-in al hacer scroll */
+.stagger-fade > * {
+  animation: fadeInUp 0.5s ease both;
+}
+
+.stagger-fade > *:nth-child(1)  { animation-delay: 0.02s; }
+.stagger-fade > *:nth-child(2)  { animation-delay: 0.04s; }
+.stagger-fade > *:nth-child(3)  { animation-delay: 0.06s; }
+.stagger-fade > *:nth-child(4)  { animation-delay: 0.08s; }
+.stagger-fade > *:nth-child(5)  { animation-delay: 0.10s; }
+.stagger-fade > *:nth-child(6)  { animation-delay: 0.12s; }
+.stagger-fade > *:nth-child(7)  { animation-delay: 0.14s; }
+.stagger-fade > *:nth-child(8)  { animation-delay: 0.16s; }
+.stagger-fade > *:nth-child(9)  { animation-delay: 0.18s; }
+.stagger-fade > *:nth-child(10) { animation-delay: 0.20s; }
+.stagger-fade > *:nth-child(11) { animation-delay: 0.22s; }
+.stagger-fade > *:nth-child(12) { animation-delay: 0.24s; }
+.stagger-fade > *:nth-child(13) { animation-delay: 0.26s; }
+.stagger-fade > *:nth-child(14) { animation-delay: 0.28s; }
+.stagger-fade > *:nth-child(15) { animation-delay: 0.30s; }
+.stagger-fade > *:nth-child(16) { animation-delay: 0.32s; }
 
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE ADAPTATIVO — Móvil / Tablet / Desktop / TV
@@ -196,9 +252,13 @@ input { font: inherit; color: inherit; background: none; border: none; outline: 
   --accent:    #c62828;
   --accent-dim:#b71c1c;
   --accent-glow: rgba(198, 40, 40, 0.2);
+  --accent-gradient: linear-gradient(135deg, #c62828, #e65100);
+  --accent-gradient-2: linear-gradient(135deg, #c62828, #aa00ff);
   --text:      #111111;
   --text-muted:#666666;
   --text-dim:  #444444;
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-glow: 0 0 30px rgba(198, 40, 40, 0.1);
 }
 
 [data-theme="light"] .navbar {

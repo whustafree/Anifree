@@ -35,11 +35,27 @@
   width: 100%;
   aspect-ratio: 16/9;
   background: #000;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 40px rgba(229,57,53,0.08);
   margin-bottom: 14px;
+  position: relative;
+}
+
+.ep-page__player-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: calc(var(--radius-lg) + 2px);
+  background: var(--accent-gradient);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--transition-normal);
+}
+
+.ep-page__player-wrap:hover::before {
+  opacity: 0.3;
 }
 
 .ep-page__player { width: 100%; height: 100%; border: none; }
@@ -108,7 +124,7 @@
 }
 
 .ep-page__nav-btn {
-  padding: 9px 18px;
+  padding: 10px 20px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-family: var(--font-display);
@@ -117,17 +133,22 @@
   color: var(--text);
   background: var(--bg-card);
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition: all var(--transition-normal);
   white-space: nowrap;
+  box-shadow: var(--shadow-card);
 }
-.ep-page__nav-btn:hover { border-color: var(--accent); background: var(--bg-hover); }
+.ep-page__nav-btn:hover { border-color: var(--accent); background: var(--bg-hover); transform: translateY(-1px); }
 
 .ep-page__nav-btn--next {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-gradient);
+  border-color: transparent;
   color: white;
+  box-shadow: 0 4px 15px rgba(229,57,53,0.3);
 }
-.ep-page__nav-btn--next:hover { background: var(--accent-dim); border-color: var(--accent-dim); }
+.ep-page__nav-btn--next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(229,57,53,0.4);
+}
 
 .ep-page__nav-disabled {
   font-size: 12px;
@@ -248,12 +269,12 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 12px;
-  border-radius: 4px;
+  padding: 10px 14px;
+  border-radius: 6px;
   border: 1px solid transparent;
   text-align: left;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all var(--transition-fast);
   background: transparent;
   color: var(--text-dim);
 }
@@ -262,12 +283,14 @@
   background: var(--bg-hover);
   border-color: var(--border);
   color: var(--text);
+  transform: translateX(2px);
 }
 
 .ep-list__item--active {
-  background: rgba(229, 57, 53, 0.08);
-  border-color: rgba(229, 57, 53, 0.3);
+  background: rgba(229, 57, 53, 0.1);
+  border-color: rgba(229, 57, 53, 0.35);
   color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .ep-list__num {

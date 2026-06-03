@@ -15,7 +15,7 @@ export default function HistoryPage() {
     <main className="hist-page">
       <div className="container">
         <div className="hist-page__header">
-          <div>
+          <div className="hist-page__title-group">
             <h1 className="hist-page__title">Historial</h1>
             <p className="hist-page__sub">{entries.length} episodio{entries.length !== 1 ? 's' : ''} visto{entries.length !== 1 ? 's' : ''}</p>
           </div>

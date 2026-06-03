@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Anifree</string>
+    <string name="title_activity_main">Anifree</string>
+    <string name="package_name">com.anifree.app</string>
+    <string name="custom_url_scheme">com.anifree.app</string>
+</resources>
